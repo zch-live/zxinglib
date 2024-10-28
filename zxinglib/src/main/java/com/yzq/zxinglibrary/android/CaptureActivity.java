@@ -41,10 +41,11 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     //private Toolbar toolbar;
     private ViewfinderView viewfinder_view;
     private ImageView flashLightIv;
-    private TextView albumButton;
+    private ImageView ivAlbumBackButton;
+    private TextView tvAlbumButton;
     private TextView flashLightTv;
     private TextView tv_xc;
-    private TextView tvLoading;
+    private TextView tvAlbumLoading;
     private LinearLayout flashLightLayout;
     private LinearLayout albumLayout;
     private LinearLayoutCompat bottomLayout;
@@ -113,10 +114,12 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         bottomLayout = (LinearLayoutCompat) findViewById(R.id.bottomLayout);
         //搜图模式
         llc_album = (LinearLayoutCompat) findViewById(R.id.llc_album);
-        albumButton = (TextView) findViewById(R.id.albumButton);
+        tvAlbumButton = (TextView) findViewById(R.id.tvAlbumButton);
         tv_xc = (TextView) findViewById(R.id.tv_xc);
-        tvLoading = (TextView) findViewById(R.id.tvLoading);
-        albumButton.setOnClickListener(this);
+        tvAlbumLoading = (TextView) findViewById(R.id.tvAlbumLoading);
+        tvAlbumButton.setOnClickListener(this);
+        ivAlbumBackButton = (ImageView) findViewById(R.id.ivAlbumBackButton);
+        ivAlbumBackButton.setOnClickListener(this);
         //扫描模式
         llc_all = (LinearLayoutCompat) findViewById(R.id.llc_all);
 
@@ -126,17 +129,32 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             switchVisibility(llc_all,!config.isAlbumModule());
             //如果自定义了选图界面则使用自定义的选择相册界面
             if (PhotoView.getPhotoView() != null){
-                llc_album.removeAllViews();
-                albumButton = (TextView) PhotoView.getPhotoView().findViewById(R.id.albumButton);
-                albumButton.setOnClickListener(this);
-                albumButton.setVisibility(View.VISIBLE);
-                tvLoading = (TextView) PhotoView.getPhotoView().findViewById(R.id.tvLoading);
-                tvLoading.setVisibility(View.GONE);
-                ViewGroup parentViewGroup = (ViewGroup) PhotoView.getPhotoView().getParent();
-                if (parentViewGroup != null) {
-                    parentViewGroup.removeAllViews();
+                try {
+                    llc_album.removeAllViews();
+                    tvAlbumButton = (TextView) PhotoView.getPhotoView().findViewById(R.id.tvAlbumButton);
+                    tvAlbumButton.setOnClickListener(this);
+                    tvAlbumButton.setVisibility(View.VISIBLE);
+                    tvAlbumLoading = (TextView) PhotoView.getPhotoView().findViewById(R.id.tvAlbumLoading);
+                    tvAlbumLoading.setVisibility(View.GONE);
+                    ivAlbumBackButton = (ImageView) PhotoView.getPhotoView().findViewById(R.id.ivAlbumBackButton);
+                    ivAlbumBackButton.setOnClickListener(this);
+                    ivAlbumBackButton.setVisibility(View.VISIBLE);
+                    ViewGroup parentViewGroup = (ViewGroup) PhotoView.getPhotoView().getParent();
+                    if (parentViewGroup != null) {
+                        parentViewGroup.removeAllViews();
+                    }
+                    llc_album.addView(PhotoView.getPhotoView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                }catch (Exception e){
+                    /**
+                     * 部分控件id错误
+                     * 请检查自定义界面中是否有
+                     * tvAlbumButton - TextView
+                     * tvAlbumLoading - TextView
+                     * ivAlbumBackButton - ImageView
+                     * 的控件
+                     * */
+                    e.printStackTrace();
                 }
-                llc_album.addView(PhotoView.getPhotoView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             }
         }else {
             switchVisibility(bottomLayout, config.isShowbottomLayout());
@@ -343,12 +361,17 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             intent.setAction(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, Constant.REQUEST_IMAGE);
-        }else if (id == R.id.albumButton){
+        }else if (id == R.id.tvAlbumButton){
             /*打开相册*/
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, Constant.REQUEST_IMAGE);
+        }else if (id == R.id.ivAlbumBackButton){
+            /*相册模式返回按钮*/
+            inactivityTimer.onActivity();
+            beepManager.playBeepSoundAndVibrate();
+            finish();
         }
 
     }
@@ -362,8 +385,9 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             String path = ImageUtil.getImageAbsolutePath(this, data.getData());
             //现在正在扫描中，请稍后回调结果后再说
             tv_xc.setVisibility(View.GONE);
-            albumButton.setVisibility(View.GONE);
-            tvLoading.setVisibility(View.VISIBLE);
+            tvAlbumButton.setVisibility(View.GONE);
+            ivAlbumBackButton.setVisibility(View.GONE);
+            tvAlbumLoading.setVisibility(View.VISIBLE);
             new DecodeImgThread(path, new DecodeImgCallback() {
                 @Override
                 public void onImageDecodeSuccess(Result result) {

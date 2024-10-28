@@ -35,8 +35,9 @@ public class MainActivity extends AppCompatActivity {
         选择按钮要使用 TextView 并且id 必须命名为 albumButton
         选择按钮要使用 TextView 并且id 必须命名为 tvLoading
         */
-        View photoView = LayoutInflater.from(this).inflate(R.layout.photo_view, null);
-        PhotoView.setPhotoView(photoView);
+        //View photoView = LayoutInflater.from(this).inflate(R.layout.photo_view, null);
+        // 通过 findViewById 去设置自己想要显示的内容
+        //PhotoView.setPhotoView(photoView);
 
         findViewById(R.id.tv1).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                     tv3.setText("请提供真实，清晰，完整的条码");
                     //失败了,终极解决办法，判断是不是高版本机型 > android11 ，有没有所有文件访问权限,建议只请求一次
                     // 请求一次不要通过是否已开启访问权限去判断，亲测无效果
-                    // 建议通过 本地存储是否请求过
+                    // 建议通过本地存储是否请求过来限制访问次数(敏感权限)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                         //弹窗提示去开启所有文件访问权限
                         Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);

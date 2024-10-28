@@ -20,14 +20,26 @@
             android:orientation="vertical"
             android:background="#FFFFFF">
 
+            <ImageView
+                android:id="@+id/ivAlbumBackButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:padding="9dp"
+                android:layout_marginTop="38dp"
+                android:layout_gravity="start"
+                android:src="@drawable/back"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_weight="1"
+                android:layout_height="0dp"/>
 
             <TextView
-                android:id="@+id/albumButton"
+                android:id="@+id/tvAlbumButton"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_photo"
-                app:tint="#ffffffff" />
+                android:background="@drawable/ic_photo"/>
 
             <TextView
                 android:id="@+id/tv_xc"
@@ -39,7 +51,7 @@
                 android:textColor="#333333" />
 
             <TextView
-                android:id="@+id/tvLoading"
+                android:id="@+id/tvAlbumLoading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="正在识别中，请耐心等待..."
@@ -47,8 +59,12 @@
                 android:textColor="#333333"
                 android:textSize="20sp"/>
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            <View
+                android:layout_width="1dp"
+                android:layout_weight="1"
+                android:layout_height="0dp"/>
 
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/llc_all"
