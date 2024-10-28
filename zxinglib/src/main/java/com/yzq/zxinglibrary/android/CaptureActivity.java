@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -20,6 +21,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import com.google.zxing.Result;
 import com.yzq.zxinglibrary.R;
+import com.yzq.zxinglibrary.bean.PhotoView;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.camera.CameraManager;
 import com.yzq.zxinglibrary.common.Constant;
@@ -39,10 +41,10 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     //private Toolbar toolbar;
     private ViewfinderView viewfinder_view;
     private ImageView flashLightIv;
-    private ImageView iv_xc;
+    private TextView albumButton;
     private TextView flashLightTv;
     private TextView tv_xc;
-    private TextView tv_loading;
+    private TextView tvLoading;
     private LinearLayout flashLightLayout;
     private LinearLayout albumLayout;
     private LinearLayoutCompat bottomLayout;
@@ -111,10 +113,10 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         bottomLayout = (LinearLayoutCompat) findViewById(R.id.bottomLayout);
         //搜图模式
         llc_album = (LinearLayoutCompat) findViewById(R.id.llc_album);
-        iv_xc = (ImageView) findViewById(R.id.iv_xc);
+        albumButton = (TextView) findViewById(R.id.albumButton);
         tv_xc = (TextView) findViewById(R.id.tv_xc);
-        tv_loading = (TextView) findViewById(R.id.tv_loading);
-        iv_xc.setOnClickListener(this);
+        tvLoading = (TextView) findViewById(R.id.tvLoading);
+        albumButton.setOnClickListener(this);
         //扫描模式
         llc_all = (LinearLayoutCompat) findViewById(R.id.llc_all);
 
@@ -122,6 +124,20 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         if (config.isAlbumModule()){
             switchVisibility(llc_album,config.isAlbumModule());
             switchVisibility(llc_all,!config.isAlbumModule());
+            //如果自定义了选图界面则使用自定义的选择相册界面
+            if (PhotoView.getPhotoView() != null){
+                llc_album.removeAllViews();
+                albumButton = (TextView) PhotoView.getPhotoView().findViewById(R.id.albumButton);
+                albumButton.setOnClickListener(this);
+                albumButton.setVisibility(View.VISIBLE);
+                tvLoading = (TextView) PhotoView.getPhotoView().findViewById(R.id.tvLoading);
+                tvLoading.setVisibility(View.GONE);
+                ViewGroup parentViewGroup = (ViewGroup) PhotoView.getPhotoView().getParent();
+                if (parentViewGroup != null) {
+                    parentViewGroup.removeAllViews();
+                }
+                llc_album.addView(PhotoView.getPhotoView(), ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            }
         }else {
             switchVisibility(bottomLayout, config.isShowbottomLayout());
             switchVisibility(flashLightLayout, config.isShowFlashLight());
@@ -327,7 +343,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             intent.setAction(Intent.ACTION_PICK);
             intent.setType("image/*");
             startActivityForResult(intent, Constant.REQUEST_IMAGE);
-        }else if (id == R.id.iv_xc){
+        }else if (id == R.id.albumButton){
             /*打开相册*/
             Intent intent = new Intent();
             intent.setAction(Intent.ACTION_PICK);
@@ -346,8 +362,8 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             String path = ImageUtil.getImageAbsolutePath(this, data.getData());
             //现在正在扫描中，请稍后回调结果后再说
             tv_xc.setVisibility(View.GONE);
-            iv_xc.setVisibility(View.GONE);
-            tv_loading.setVisibility(View.VISIBLE);
+            albumButton.setVisibility(View.GONE);
+            tvLoading.setVisibility(View.VISIBLE);
             new DecodeImgThread(path, new DecodeImgCallback() {
                 @Override
                 public void onImageDecodeSuccess(Result result) {

@@ -10,10 +10,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yzq.zxinglibrary.android.CaptureActivity;
+import com.yzq.zxinglibrary.bean.PhotoView;
 import com.yzq.zxinglibrary.bean.ZxingConfig;
 import com.yzq.zxinglibrary.common.Constant;
 
@@ -27,6 +30,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         tv3 = findViewById(R.id.tv3);
+
+        /*如果需要自定义选择相册界面,使用此代码
+        选择按钮要使用 TextView 并且id 必须命名为 albumButton
+        选择按钮要使用 TextView 并且id 必须命名为 tvLoading
+        */
+        View photoView = LayoutInflater.from(this).inflate(R.layout.photo_view, null);
+        PhotoView.setPhotoView(photoView);
+
         findViewById(R.id.tv1).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

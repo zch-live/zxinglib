@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#000000"
+    tools:context=".MainActivity">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="不再手动输入 准确 便捷"
+        android:gravity="center"
+        android:textColor="#FFFFFF"/>
+
+    <TextView
+        android:id="@+id/albumButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="打开相册"
+        android:gravity="center"
+        android:textColor="#FFFFFF"
+        android:background="@android:color/holo_red_dark"/>
+
+    <TextView
+        android:id="@+id/tvLoading"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="正在识别"
+        android:gravity="center"
+        android:textColor="#FFFFFF"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>

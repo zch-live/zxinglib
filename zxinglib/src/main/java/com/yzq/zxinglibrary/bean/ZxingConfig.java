@@ -1,5 +1,7 @@
 package com.yzq.zxinglibrary.bean;
 
+import android.view.View;
+
 import java.io.Serializable;
 
 /**
@@ -23,6 +25,8 @@ public class ZxingConfig implements Serializable {
     private boolean isShowAlbum = true;
     /*相册选图模式，其他界面全部隐藏*/
     private boolean isAlbumModule = false;
+    /*自定义选择相册布局*/
+    private View photoView = null;
 
     public boolean isPlayBeep() {
         return isPlayBeep;
@@ -70,5 +74,13 @@ public class ZxingConfig implements Serializable {
 
     public void setAlbumModule(boolean albumModule) {
         isAlbumModule = albumModule;
+    }
+
+    public View getPhotoView() {
+        return photoView;
+    }
+
+    public void setPhotoView(View photoView) {
+        this.photoView = photoView;
     }
 }

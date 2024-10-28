@@ -21,8 +21,8 @@
             android:background="#FFFFFF">
 
 
-            <ImageView
-                android:id="@+id/iv_xc"
+            <TextView
+                android:id="@+id/albumButton"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:scaleType="centerCrop"
@@ -39,7 +39,7 @@
                 android:textColor="#333333" />
 
             <TextView
-                android:id="@+id/tv_loading"
+                android:id="@+id/tvLoading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="正在识别中，请耐心等待..."
