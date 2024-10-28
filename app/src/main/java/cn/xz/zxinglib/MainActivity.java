@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 //config.setPlayBeep(true);//是否播放提示音
                 //config.setShake(true);//是否震动
                 config.setShowAlbum(false); //是否显示相册
+                config.setShowBack(true); //显示左上角返回
                 //config.setShowFlashLight(true);//是否显示闪光灯
                 intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
                 startActivityForResult(intent, 100866);

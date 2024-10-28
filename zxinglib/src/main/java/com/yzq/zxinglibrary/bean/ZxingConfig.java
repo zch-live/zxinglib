@@ -19,6 +19,8 @@ public class ZxingConfig implements Serializable {
     private boolean isShake = false;
     /*是否显示下方的其他功能布局*/
     private boolean isShowbottomLayout = true;
+    /*是否显示扫描模式下左上角返回按钮*/
+    private boolean isShowBack = false;
     /*是否显示闪光灯按钮*/
     private boolean isShowFlashLight = true;
     /*是否显示相册按钮*/
@@ -82,5 +84,13 @@ public class ZxingConfig implements Serializable {
 
     public void setPhotoView(View photoView) {
         this.photoView = photoView;
+    }
+
+    public boolean isShowBack() {
+        return isShowBack;
+    }
+
+    public void setShowBack(boolean showBack) {
+        isShowBack = showBack;
     }
 }

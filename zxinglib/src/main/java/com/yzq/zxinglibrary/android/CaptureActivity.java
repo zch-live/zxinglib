@@ -41,6 +41,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     //private Toolbar toolbar;
     private ViewfinderView viewfinder_view;
     private ImageView flashLightIv;
+    private ImageView captureImageviewBack;
     private ImageView ivAlbumBackButton;
     private TextView tvAlbumButton;
     private TextView flashLightTv;
@@ -106,6 +107,9 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         viewfinder_view = (ViewfinderView) findViewById(R.id.viewfinder_view);
         viewfinder_view.setOnClickListener(this);
         flashLightIv = (ImageView) findViewById(R.id.flashLightIv);
+        captureImageviewBack = (ImageView) findViewById(R.id.capture_imageview_back);
+        captureImageviewBack.setOnClickListener(this);
+        captureImageviewBack.setVisibility(View.GONE);
         flashLightTv = (TextView) findViewById(R.id.flashLightTv);
         flashLightLayout = (LinearLayout) findViewById(R.id.flashLightLayout);
         flashLightLayout.setOnClickListener(this);
@@ -160,6 +164,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             switchVisibility(bottomLayout, config.isShowbottomLayout());
             switchVisibility(flashLightLayout, config.isShowFlashLight());
             switchVisibility(albumLayout, config.isShowAlbum());
+            switchVisibility(captureImageviewBack, config.isShowBack());
 //
 //        toolbar.setTitle("扫一扫");
 //        setSupportActionBar(toolbar);
@@ -369,6 +374,10 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
             startActivityForResult(intent, Constant.REQUEST_IMAGE);
         }else if (id == R.id.ivAlbumBackButton){
             /*相册模式返回按钮*/
+            inactivityTimer.onActivity();
+            beepManager.playBeepSoundAndVibrate();
+            finish();
+        }else if (id == R.id.capture_imageview_back){
             inactivityTimer.onActivity();
             beepManager.playBeepSoundAndVibrate();
             finish();
