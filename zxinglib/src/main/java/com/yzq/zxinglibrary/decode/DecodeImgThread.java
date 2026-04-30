@@ -1,7 +1,9 @@
 package com.yzq.zxinglibrary.decode;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import com.google.zxing.Result;
@@ -26,6 +28,9 @@ public class DecodeImgThread extends Thread {
 
     /*图片路径*/
     private String imgPath;
+    /*图片Uri*/
+    private Uri imgUri;
+    private Context context;
     /*回调*/
     private DecodeImgCallback callback;
 
@@ -34,11 +39,17 @@ public class DecodeImgThread extends Thread {
         this.callback = callback;
     }
 
+    public DecodeImgThread(Context context, Uri imgUri, DecodeImgCallback callback) {
+        this.context = context == null ? null : context.getApplicationContext();
+        this.imgUri = imgUri;
+        this.callback = callback;
+    }
+
     @Override
     public void run() {
         super.run();
 
-        if (TextUtils.isEmpty(imgPath) || callback == null) {
+        if ((TextUtils.isEmpty(imgPath) && imgUri == null) || callback == null) {
             return;
         }
 
@@ -75,7 +86,9 @@ public class DecodeImgThread extends Thread {
 
 
         // 开始对图像资源解码
-        final Bitmap finalScanBitmap = PhotoUtils.compressPicture(imgPath);
+        final Bitmap finalScanBitmap = imgUri != null
+                ? PhotoUtils.compressPicture(context, imgUri)
+                : PhotoUtils.compressPicture(imgPath);
         if (finalScanBitmap == null){
             //防护
             callback.onImageDecodeFailed();
@@ -97,7 +110,7 @@ public class DecodeImgThread extends Thread {
                     @Override
                     public void callError() {
                         //传入原图
-                        qImage(imgPath,5);
+                        qImage(5);
                     }
                 });
             }
@@ -109,10 +122,16 @@ public class DecodeImgThread extends Thread {
      * 首先将原图切割
      * 切割之后在进行采集率压缩
      * */
-    private void qImage(final String imgPath,int num){
+    private void qImage(int num){
         Log.e("TAG", "callError:多轮测试-这是第几轮 "+num);
         //拿到整张原图
-        Bitmap finalScanBitmap = PhotoUtils.openImage(imgPath);
+        Bitmap finalScanBitmap = imgUri != null
+                ? PhotoUtils.openImage(context, imgUri)
+                : PhotoUtils.openImage(imgPath);
+        if (finalScanBitmap == null) {
+            callback.onImageDecodeFailed();
+            return;
+        }
         // 调用方法将Bitmap切割成8份
         final int[] partsCount = {num};//总切割张数
         final int[] nowCount = {0};//当前张数
@@ -148,7 +167,7 @@ public class DecodeImgThread extends Thread {
                                             if (partsCount[0] == 8){
                                                 callback.onImageDecodeFailed();
                                             }else {
-                                                qImage(imgPath,partsCount[0] += 1);
+                                                qImage(partsCount[0] += 1);
                                             }
                                         }
                                     }

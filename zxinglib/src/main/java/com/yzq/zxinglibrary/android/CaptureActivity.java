@@ -27,7 +27,6 @@ import com.yzq.zxinglibrary.camera.CameraManager;
 import com.yzq.zxinglibrary.common.Constant;
 import com.yzq.zxinglibrary.decode.DecodeImgCallback;
 import com.yzq.zxinglibrary.decode.DecodeImgThread;
-import com.yzq.zxinglibrary.decode.ImageUtil;
 import com.yzq.zxinglibrary.view.ViewfinderView;
 import java.io.IOException;
 
@@ -222,7 +221,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         Intent intent = getIntent();
         intent.putExtra(Constant.CODED_CONTENT, rawResult.getText());
         //      intent.putExtra(Constant.CODED_BITMAP, barcode);
-        setResult(10086, intent);
+        setResult(Activity.RESULT_OK, intent);
         this.finish();
 
 
@@ -391,13 +390,16 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constant.REQUEST_IMAGE && resultCode == RESULT_OK) {
-            String path = ImageUtil.getImageAbsolutePath(this, data.getData());
+            if (data == null || data.getData() == null) {
+                handleDecode(new Result("解析失败",null,0,null,null,0));
+                return;
+            }
             //现在正在扫描中，请稍后回调结果后再说
             tv_xc.setVisibility(View.GONE);
             tvAlbumButton.setVisibility(View.GONE);
             ivAlbumBackButton.setVisibility(View.GONE);
             tvAlbumLoading.setVisibility(View.VISIBLE);
-            new DecodeImgThread(path, new DecodeImgCallback() {
+            new DecodeImgThread(this, data.getData(), new DecodeImgCallback() {
                 @Override
                 public void onImageDecodeSuccess(Result result) {
                     handleDecode(result);

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 拍照，相册，录像等
@@ -210,12 +211,48 @@ public class PhotoUtils {
             options.inSampleSize = calculateInSampleSize(options, 100, 100);
             options.inJustDecodeBounds = false;
             Bitmap afterCompressBm = BitmapFactory.decodeFile(imgPath, options);
+            if (afterCompressBm == null){
+                afterCompressBm =  BitMapUtil.openImage(imgPath);
+            }
             return afterCompressBm;
         }catch (Exception e){
             e.printStackTrace();
             return null;
         }
 
+    }
+
+    public static Bitmap compressPicture(Context context, Uri uri) {
+        if (context == null || uri == null) {
+            return null;
+        }
+        try {
+            BitmapFactory.Options boundsOptions = new BitmapFactory.Options();
+            boundsOptions.inJustDecodeBounds = true;
+            try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
+                if (inputStream == null) {
+                    return null;
+                }
+                BitmapFactory.decodeStream(inputStream, null, boundsOptions);
+            }
+            BitmapFactory.Options decodeOptions = new BitmapFactory.Options();
+            decodeOptions.inSampleSize = calculateInSampleSize(boundsOptions, 100, 100);
+            decodeOptions.inJustDecodeBounds = false;
+            Bitmap bitmap;
+            try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
+                if (inputStream == null) {
+                    return null;
+                }
+                bitmap = BitmapFactory.decodeStream(inputStream, null, decodeOptions);
+            }
+            if (bitmap == null) {
+                bitmap = openImage(context, uri);
+            }
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
@@ -289,5 +326,20 @@ public class PhotoUtils {
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    public static Bitmap openImage(Context context, Uri uri) {
+        if (context == null || uri == null) {
+            return null;
+        }
+        try (InputStream inputStream = context.getContentResolver().openInputStream(uri)) {
+            if (inputStream == null) {
+                return null;
+            }
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

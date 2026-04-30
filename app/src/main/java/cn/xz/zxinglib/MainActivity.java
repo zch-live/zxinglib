@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
                 config.setShowBack(true); //显示左上角返回
                 //config.setShowFlashLight(true);//是否显示闪光灯
                 intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                startActivityForResult(intent, 100866);
+                startActivityForResult(intent, 123456);
             }
         });
         findViewById(R.id.tv2).setOnClickListener(new View.OnClickListener() {
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 config.setAlbumModule(true); //相册选图模式
                 //config.setShowFlashLight(true);//是否显示闪光灯
                 intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                startActivityForResult(intent, 100866);
+                startActivityForResult(intent, 456789);
             }
         });
         requestPermission();
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 10086){
+        if (requestCode == 123456){
             if (data != null){
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 if (content == null || content.contains("失败")){
@@ -120,6 +120,27 @@ public class MainActivity extends AppCompatActivity {
                         Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                         startActivity(intent);
                     }
+
+                }else {
+                    //识别成功
+                    tv3.setText("扫描结果:" + content);
+                }
+            }
+        }
+        if (requestCode == 456789){
+            if (data != null){
+                String content = data.getStringExtra(Constant.CODED_CONTENT);
+                if (content == null || content.contains("失败")){
+                    //识别失败
+                    tv3.setText("请提供真实，清晰，完整的条码");
+                    //失败了,终极解决办法，判断是不是高版本机型 > android11 ，有没有所有文件访问权限,建议只请求一次
+                    // 请求一次不要通过是否已开启访问权限去判断，亲测无效果
+                    // 建议通过本地存储是否请求过来限制访问次数(敏感权限)
+                    /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        //弹窗提示去开启所有文件访问权限
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                        startActivity(intent);
+                    }*/
 
                 }else {
                     //识别成功
