@@ -51,10 +51,11 @@ public class MainActivity extends AppCompatActivity {
                 //config.setPlayBeep(true);//是否播放提示音
                 //config.setShake(true);//是否震动
                 config.setShowAlbum(false); //是否显示相册
+                config.setResCode(123456);
                 config.setShowBack(true); //显示左上角返回
                 //config.setShowFlashLight(true);//是否显示闪光灯
                 intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                startActivityForResult(intent, 123456);
+                startActivityForResult(intent, 10086);
             }
         });
         findViewById(R.id.tv2).setOnClickListener(new View.OnClickListener() {
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 config.setAlbumModule(true); //相册选图模式
                 //config.setShowFlashLight(true);//是否显示闪光灯
                 intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                startActivityForResult(intent, 456789);
+                startActivityForResult(intent, 10086);
             }
         });
         requestPermission();
@@ -106,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 123456){
+        if (resultCode == 123456){
             if (data != null){
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 if (content == null || content.contains("失败")){
@@ -127,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        if (requestCode == 456789){
+        if (resultCode == 10086){
             if (data != null){
                 String content = data.getStringExtra(Constant.CODED_CONTENT);
                 if (content == null || content.contains("失败")){

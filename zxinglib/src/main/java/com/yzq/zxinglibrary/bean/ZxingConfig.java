@@ -29,6 +29,9 @@ public class ZxingConfig implements Serializable {
     private boolean isAlbumModule = false;
     /*自定义选择相册布局*/
     private View photoView = null;
+    /*标识code如果有onActivityResult中resultCode返回该code
+    没有的话默认10086*/
+    private int resCode = -1;
 
     public boolean isPlayBeep() {
         return isPlayBeep;
@@ -40,6 +43,14 @@ public class ZxingConfig implements Serializable {
 
     public boolean isShake() {
         return isShake;
+    }
+
+    public void setResCode(int requestCode) {
+        resCode = requestCode;
+    }
+
+    public int getResCode() {
+        return resCode;
     }
 
     public void setShake(boolean shake) {

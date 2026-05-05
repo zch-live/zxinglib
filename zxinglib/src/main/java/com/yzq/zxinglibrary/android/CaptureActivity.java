@@ -57,7 +57,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
     private SurfaceHolder surfaceHolder;
-
+    private int resCode = -1;
 
     public ViewfinderView getViewfinderView() {
         return viewfinder_view;
@@ -96,6 +96,7 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         beepManager = new BeepManager(this);
         beepManager.setPlayBeep(config.isPlayBeep());
         beepManager.setVibrate(config.isShake());
+        resCode = config.getResCode();
     }
 
 
@@ -221,7 +222,10 @@ public class CaptureActivity extends Activity implements SurfaceHolder.Callback,
         Intent intent = getIntent();
         intent.putExtra(Constant.CODED_CONTENT, rawResult.getText());
         //      intent.putExtra(Constant.CODED_BITMAP, barcode);
-        setResult(Activity.RESULT_OK, intent);
+        if (resCode == -1){
+            resCode = 10086;
+        }
+        setResult(resCode, intent);
         this.finish();
 
 
